@@ -27,6 +27,13 @@ export default function Home() {
     setInventory(inventoryList);
   };
 
+  useEffect(() => {
+    // Only update inventory if window is defined
+    if (typeof window !== 'undefined') {
+      updateInventory();
+    }
+  }, []);
+
   const addItem = async (item) => {
     const docRef = doc(collection(firestore, 'inventory'), item);
     const docSnap = await getDoc(docRef);
@@ -38,7 +45,9 @@ export default function Home() {
       await setDoc(docRef, { quantity: 1 });
     }
 
-    await updateInventory();
+    if (typeof window !== 'undefined') {
+      await updateInventory();
+    }
   };
 
   const removeItem = async (item) => {
@@ -54,7 +63,9 @@ export default function Home() {
       }
     }
 
-    await updateInventory();
+    if (typeof window !== 'undefined') {
+      await updateInventory();
+    }
   };
 
   const updateItemQuantity = async (item, newQuantity) => {
@@ -64,12 +75,10 @@ export default function Home() {
     } else {
       await setDoc(docRef, { quantity: newQuantity });
     }
-    await updateInventory();
+    if (typeof window !== 'undefined') {
+      await updateInventory();
+    }
   };
-
-  useEffect(() => {
-    updateInventory();
-  }, []);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -238,7 +247,7 @@ export default function Home() {
                         }}
                         inputProps={{ min: 0 }}
                         sx={{
-                          width: '80px', // Increased width
+                          width: '60px', // Increased width
                           textAlign: 'center',
                           input: { color: '#fff' },
                           '& .MuiOutlinedInput-root': {
